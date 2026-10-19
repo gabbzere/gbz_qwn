@@ -1,0 +1,785 @@
+{
+  "1": {
+    "inputs": {
+      "note": "{\"v\": 1, \"title\": \"Qwen Image 2.1 Turbo\", \"subtitle\": \"Make a picture from a prompt, or change one you load, in 8 steps. Switches write the prompt for you and upscale the result.\", \"author\": \"AusBoss\", \"layout\": \"card\", \"accent\": \"\", \"body\": \"[▶ Watch the video](https://youtu.be/ZX7RrPFGL_4) · this workflow, start to finish, on YouTube\\n\\n---\\n\\n1. Write your prompt. With **Auto prompt** on, a few words are enough.\\n2. Set the size in **Latent Size**.\\n3. Press **Run**.\\n4. To change a picture instead, switch **Edit a picture** on, load it and write the change as the prompt.\\n\\n### Switches\\n\\n- **Edit a picture** off: the prompt makes a new picture. On: the prompt changes the picture you load. It also turns the Consistency LoRA on, which keeps the edit lined up with your picture. A before and after slider shows your picture against the edit.\\n- **Auto prompt** on: Qwen writes the full prompt from your few words. For an edit it looks at your picture and writes the instruction. What it wrote shows in **Show Text**. It takes a few seconds more.\\n- **Upscale the result** on: the result is redrawn bigger in tiles, up to the **Megapixels** you set. It needs the Restore LoRA.\\n\\n### Tips\\n\\n- The 8 steps are built in. There is no Steps box, and CFG stays at 1.\\n- A new picture works from 1 to 8 megapixels. On an RTX 5090, 2 takes about 4 seconds, 4 about 11 and 8 about 34, and 8 needs about 25 GB of VRAM.\\n- For a bigger new picture, raise **Latent Size**. **Upscale the result** is for a picture you already made, for an edit, and for a card with less memory: its tiles are 2 megapixels each.\\n- For an edit, say what changes and what stays: \\\"Change the black t-shirt to a red sweater. Keep everything else the same.\\\"\\n- Your picture is resized to 2 megapixels for the edit. To change that, set **Megapixels** in the **Resize** row of the picture node.\\n- To change how Auto prompt writes, open the box **Write the prompt**: both instructions are plain text.\\n- If the run stops with \\\"LoRA Loader ... rejected the value for loras\\\", a LoRA file is missing. Download it from the list below.\\n\\nNeeds ComfyUI 0.38 or newer and AusBoss nodes 2.10.0 or newer (update first).\", \"models\": [{\"name\": \"qwen_image_2.1_turbo_int8_convrot.safetensors\", \"dir\": \"diffusion_models\", \"size\": \"7.26 GB\", \"url\": \"https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/diffusion_models/qwen_image_2.1_turbo_int8_convrot.safetensors\", \"note\": \"\"}, {\"name\": \"qwen3vl_8b_int8_convrot.safetensors\", \"dir\": \"text_encoders\", \"size\": \"9.35 GB\", \"url\": \"https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/text_encoders/qwen3vl_8b_int8_convrot.safetensors\", \"note\": \"\"}, {\"name\": \"qwen_image_2.1_vae_bf16.safetensors\", \"dir\": \"vae\", \"size\": \"676 MB\", \"url\": \"https://huggingface.co/Comfy-Org/Qwen-Image-2.1/resolve/main/vae/qwen_image_2.1_vae_bf16.safetensors\", \"note\": \"\"}, {\"name\": \"qwen-image-2.1-consistency.safetensors\", \"dir\": \"loras\", \"size\": \"159 MB\", \"url\": \"https://huggingface.co/ausboss/Qwen-Image-2.1-Consistency-LoRA/resolve/main/qwen-image-2.1-consistency.safetensors\", \"note\": \"only for Edit a picture\"}, {\"name\": \"qwen-image-2.1-restore.safetensors\", \"dir\": \"loras\", \"size\": \"159 MB\", \"url\": \"https://huggingface.co/ausboss/Qwen-Image-2.1-Restore-LoRA/resolve/main/qwen-image-2.1-restore.safetensors\", \"note\": \"only for Upscale the result\"}], \"packs\": [{\"name\": \"ComfyUI-AusBoss\", \"url\": \"https://github.com/ausboss/ComfyUI-AusBoss\", \"node\": \"AUSBOSS_NODES_TiledUpscale\"}], \"links\": [{\"label\": \"YouTube · this workflow\", \"url\": \"https://youtu.be/ZX7RrPFGL_4\"}, {\"label\": \"GitHub · ausboss\", \"url\": \"https://github.com/ausboss\"}, {\"label\": \"Civitai · AusBoss\", \"url\": \"https://civitai.com/user/AusBoss\"}, {\"label\": \"X · Zanzibased\", \"url\": \"https://x.com/Zanzibased\"}]}"
+    },
+    "class_type": "AUSBOSS_NODES_WorkflowNote",
+    "_meta": {
+      "title": "🆎 AusBoss"
+    }
+  },
+  "3": {
+    "inputs": {
+      "text": "Extreme close up face portrait. Place this woman sitting on the large neutral sofa in the formal living room, wearing a plain white t-shirt. Her attention is directed toward the switched-off television in front of her. Behind her, cream walls, elegant moulding, dark polished wood flooring, upholstered armchairs, framed artwork, heavy curtains, and a pale stone fireplace create the same wealthy family home. Tuesday afternoon. Retain her facial features, face shape, and skin details from the reference image."
+    },
+    "class_type": "AUSBOSS_NODES_Text",
+    "_meta": {
+      "title": "Text - Your prompt"
+    }
+  },
+  "4": {
+    "inputs": {
+      "seed": 1073863145200582
+    },
+    "class_type": "AUSBOSS_NODES_Seed",
+    "_meta": {
+      "title": "Seed"
+    }
+  },
+  "5": {
+    "inputs": {
+      "width": 1536,
+      "height": 864,
+      "latent": "16ch",
+      "batch_size": 1
+    },
+    "class_type": "AUSBOSS_NODES_Resolution",
+    "_meta": {
+      "title": "Latent Size - Size of a new picture"
+    }
+  },
+  "6": {
+    "inputs": {
+      "image": "WhitneyUpscaler.png",
+      "rotation_degrees": 0,
+      "crop_aspect_ratio": "free",
+      "crop_x": 0,
+      "crop_y": 0,
+      "crop_width": 0,
+      "crop_height": 0,
+      "pad_left": 0,
+      "pad_top": 0,
+      "pad_right": 0,
+      "pad_bottom": 0,
+      "feather": 24,
+      "canvas_multiple": 1,
+      "fill_color": "#808080",
+      "resize_to_megapixels": true,
+      "megapixels": 2,
+      "resize_method": "lanczos",
+      "resolution_steps": 32,
+      "stitch_blend": 32,
+      "stitch_grow": 0,
+      "painted_area": "fill"
+    },
+    "class_type": "AUSBOSS_NODES_ImageCropRotatePad",
+    "_meta": {
+      "title": "Image Crop + Rotate + Pad - Your picture"
+    }
+  },
+  "7": {
+    "inputs": {
+      "megapixels": 8,
+      "tile_megapixels": 2,
+      "overlap": 128,
+      "multiple": 32,
+      "max_growth": 8,
+      "image": [
+        "39:30",
+        0
+      ]
+    },
+    "class_type": "AUSBOSS_NODES_TiledUpscale",
+    "_meta": {
+      "title": "Tiled Upscale - Megapixels of the result"
+    }
+  },
+  "8": {
+    "inputs": {
+      "clip_name": "qwen3vl_8b_int8_convrot.safetensors",
+      "type": "qwen_image",
+      "device": "default"
+    },
+    "class_type": "CLIPLoader",
+    "_meta": {
+      "title": "Text encoder"
+    }
+  },
+  "9": {
+    "inputs": {
+      "vae_name": "qwen_image_2.1_vae_bf16.safetensors"
+    },
+    "class_type": "VAELoader",
+    "_meta": {
+      "title": "VAE"
+    }
+  },
+  "10": {
+    "inputs": {
+      "unet_name": "qwen_image_2.1_turbo_int8_convrot.safetensors",
+      "weight_dtype": "default"
+    },
+    "class_type": "UNETLoader",
+    "_meta": {
+      "title": "Diffusion model"
+    }
+  },
+  "11": {
+    "inputs": {
+      "loras": "[{\"id\":\"rmvf0yhek21\",\"name\":\"qwen-image-2.1-consistency.safetensors\",\"strength\":0.7,\"strength_clip\":0.7,\"enabled\":true,\"triggers\":\"\"},{\"id\":\"rmvf10hh222\",\"name\":\"Qwen21\\\\ARCHER2.safetensors\",\"strength\":0.45,\"strength_clip\":0.45,\"enabled\":true,\"triggers\":\"\"},{\"id\":\"rmvf10jis23\",\"name\":\"Qwen21\\\\lenovo_qwen21.safetensors\",\"strength\":0.6,\"strength_clip\":0.6,\"enabled\":true,\"triggers\":\"\"}]",
+      "trigger_separator": ", ",
+      "on_missing": "error",
+      "model": [
+        "10",
+        0
+      ]
+    },
+    "class_type": "AUSBOSS_NODES_LoraLoader",
+    "_meta": {
+      "title": "LoRA Loader - Consistency LoRA"
+    }
+  },
+  "12": {
+    "inputs": {
+      "image_a": [
+        "7",
+        2
+      ],
+      "image_b": [
+        "40:38",
+        0
+      ]
+    },
+    "class_type": "AUSBOSS_NODES_Compare",
+    "_meta": {
+      "title": "Image Compare A/B - Before and after the upscale"
+    }
+  },
+  "13": {
+    "inputs": {
+      "filename_prefix": "qwen21_turbo",
+      "format": "png",
+      "save_metadata": true,
+      "exact_name": "",
+      "on_existing": "overwrite",
+      "output_dir": "",
+      "caption": "",
+      "name_counter": true,
+      "name_date": false,
+      "name_time": false,
+      "name_size": false,
+      "name_batch": false,
+      "preview": true,
+      "images": [
+        "40:38",
+        0
+      ]
+    },
+    "class_type": "AUSBOSS_NODES_SaveImage",
+    "_meta": {
+      "title": "Save Image"
+    }
+  },
+  "14": {
+    "inputs": {},
+    "class_type": "AUSBOSS_NODES_RunTimer",
+    "_meta": {
+      "title": "Run Timer"
+    }
+  },
+  "15": {
+    "inputs": {
+      "text": [
+        "41:22",
+        0
+      ]
+    },
+    "class_type": "AUSBOSS_NODES_ShowText",
+    "_meta": {
+      "title": "Show Text - Prompt sent to Qwen"
+    }
+  },
+  "42": {
+    "inputs": {
+      "text": "⬆️#3 With **Auto prompt** on, a few words are enough: a woman on a rooftop at dusk. For an edit, type the change.\n\n⬇️#6 Load your picture here when **Edit a picture** is on. Drag the blue handles to crop it."
+    },
+    "class_type": "AUSBOSS_NODES_Callout",
+    "_meta": {
+      "title": "Callout"
+    }
+  },
+  "43": {
+    "inputs": {
+      "text": "⬇️#2 **Edit a picture** off: the prompt makes a new picture. On: it changes the picture you load.\n\n⬇️#2 **Auto prompt** on: Qwen writes the full prompt from a few words of yours.\n\n⬇️#2 **Upscale the result** is off at first. Switch it on to redraw the result bigger, in tiles."
+    },
+    "class_type": "AUSBOSS_NODES_Callout",
+    "_meta": {
+      "title": "Callout"
+    }
+  },
+  "44": {
+    "inputs": {
+      "text": "Three boxes do the work: one writes the prompt, one makes or changes the picture, one upscales it in tiles. Double-click one to see inside.\n\n⬇️#7 Set **Megapixels**: the size after the upscale."
+    },
+    "class_type": "AUSBOSS_NODES_Callout",
+    "_meta": {
+      "title": "Callout"
+    }
+  },
+  "45": {
+    "inputs": {
+      "text": "The **Consistency** row keeps an edit lined up with your picture. **Edit a picture** turns it on."
+    },
+    "class_type": "AUSBOSS_NODES_Callout",
+    "_meta": {
+      "title": "Callout"
+    }
+  },
+  "54": {
+    "inputs": {
+      "image_a": [
+        "6",
+        0
+      ],
+      "image_b": [
+        "39:30",
+        0
+      ]
+    },
+    "class_type": "AUSBOSS_NODES_Compare",
+    "_meta": {
+      "title": "Image Compare A/B - Before and after the edit"
+    }
+  },
+  "41:17": {
+    "inputs": {
+      "text": "You are a prompt writer for an image model.\n\nYou receive a short idea from the user.\n\nRewrite it as one full text-to-image prompt of four to six sentences.\n- Begin with the medium and style in a few words, such as \"35mm film photograph\", \"Smartphone photo\", \"Anime illustration\", \"Oil painting\" or \"3D render\". Use the one the user names. If they name none, make it a photograph and pick the kind that suits the idea.\n- Then describe the subject, what they are doing and wearing, the setting and the background, with materials, colors, lighting, camera angle and framing.\n- Give the time of day in plain words, such as dusk or late at night. Leave out clock times, dates, and any name or number the user did not give.\n- For a painting or drawing, name the marks of the medium: brushstrokes, how the paint sits, the paper or canvas.\n- Keep everything the user said. Add what makes the picture specific, stay with the user's one subject and idea, and bring in people only when the idea has them.\n- Only when the user asks for readable words in the picture, such as a sign, a label or a title: put exactly those words in straight double quotes, spelled as the user wrote them, and say where they are. Use quotation marks for nothing else.\n- Every sentence says what is in the picture. Leave out anything that is absent: never write \"no\", \"not\" or \"without\" about the scene.\n- Write full sentences in plain factual language and the present tense. End each one with a period. Never use a semicolon or a label such as \"Lighting:\".\n\nOutput only the prompt: one paragraph, four to six sentences, 80 to 140 words."
+    },
+    "class_type": "AUSBOSS_NODES_Text",
+    "_meta": {
+      "title": "Text - How a new picture's prompt is written"
+    }
+  },
+  "41:18": {
+    "inputs": {
+      "f_string": "{a}\n\nIdea: {b}",
+      "values.a": [
+        "41:17",
+        0
+      ],
+      "values.b": [
+        "3",
+        0
+      ]
+    },
+    "class_type": "StringFormat",
+    "_meta": {
+      "title": "Format Text - Instructions plus your idea"
+    }
+  },
+  "41:19": {
+    "inputs": {
+      "text": "You are an image-edit prompt writer.\n\nYou receive:\n1. An input image.\n2. A short, informal edit request from the user.\n\nRewrite the request as one clear instruction for an image editing model.\n- Start with the change as a direct instruction. Name what it points at the way it appears in the image: its color, material and where it is.\n- Then say what the result looks like where the change happens, in things that can be seen. When something is removed, remove only that and say what shows in its place.\n- Make the change plain to see. Use strong, exact words for how much there is and where it lies, and leave out soft ones such as gently, subtle, slightly or a hint of.\n- A change to the weather, the season, the time of day or the light reaches the whole scene. Carry it through the air, the sky, the ground, the surfaces and what people wear, and say what each looks like afterwards: for snow, large flakes fill the air and a layer of fresh snow covers the ground.\n- For a style change, apply it to the whole image and name three or more marks of the style: for a painting, its brushstrokes, how the paint sits and pools, and the paper or canvas.\n- Add only what the user asked for: bring in new lighting, colors or weather only when the request names them.\n- End with one short sentence that names the one or two things that must stay, such as the person's face and pose, the framing, or that a night picture stays as dark. Leave the rest unsaid.\n- Write full sentences that end with a period. Never use a semicolon.\n\nOutput only the instruction, as one paragraph of 40 to 90 words."
+    },
+    "class_type": "AUSBOSS_NODES_Text",
+    "_meta": {
+      "title": "Text - How an edit is written"
+    }
+  },
+  "41:20": {
+    "inputs": {
+      "f_string": "{a}\n\nEdit request: {b}",
+      "values.a": [
+        "41:19",
+        0
+      ],
+      "values.b": [
+        "3",
+        0
+      ]
+    },
+    "class_type": "StringFormat",
+    "_meta": {
+      "title": "Format Text - Instructions plus your edit"
+    }
+  },
+  "41:21": {
+    "inputs": {
+      "switch": true,
+      "on_false": [
+        "41:18",
+        0
+      ],
+      "on_true": [
+        "41:20",
+        0
+      ]
+    },
+    "class_type": "ComfySwitchNode",
+    "_meta": {
+      "title": "If/Else Switch - New picture or edit"
+    }
+  },
+  "41:22": {
+    "inputs": {
+      "prompt": [
+        "41:21",
+        0
+      ],
+      "max_length": 512,
+      "sampling_mode": "on",
+      "sampling_mode.temperature": 0.5,
+      "sampling_mode.top_k": 20,
+      "sampling_mode.top_p": 0.9,
+      "sampling_mode.min_p": 0,
+      "sampling_mode.repetition_penalty": 1,
+      "sampling_mode.seed": 1,
+      "sampling_mode.presence_penalty": 0,
+      "thinking": true,
+      "use_default_template": true,
+      "mtp": "auto",
+      "clip": [
+        "8",
+        0
+      ],
+      "image": [
+        "6",
+        0
+      ]
+    },
+    "class_type": "TextGenerate",
+    "_meta": {
+      "title": "Generate Text - Qwen3-VL writes the prompt"
+    }
+  },
+  "41:46": {
+    "inputs": {
+      "text": "How Qwen turns a few words into a full prompt. Change these words to change how prompts get written."
+    },
+    "class_type": "AUSBOSS_NODES_Callout",
+    "_meta": {
+      "title": "Callout"
+    }
+  },
+  "41:47": {
+    "inputs": {
+      "text": "How Qwen turns a short request into an edit instruction. It looks at your picture. Edit a picture switches to this one."
+    },
+    "class_type": "AUSBOSS_NODES_Callout",
+    "_meta": {
+      "title": "Callout"
+    }
+  },
+  "41:48": {
+    "inputs": {
+      "text": "Qwen3-VL, the text encoder this workflow already loads, writes the prompt. Its seed is fixed: the same words give the same prompt."
+    },
+    "class_type": "AUSBOSS_NODES_Callout",
+    "_meta": {
+      "title": "Callout"
+    }
+  },
+  "39:24": {
+    "inputs": {
+      "prompt": [
+        "41:22",
+        0
+      ],
+      "negative_prompt": "",
+      "resolution": 0,
+      "clip": [
+        "8",
+        0
+      ],
+      "images.image_1": [
+        "6",
+        0
+      ],
+      "vae": [
+        "9",
+        0
+      ]
+    },
+    "class_type": "TextEncodeQwenImage21",
+    "_meta": {
+      "title": "Text Encode Qwen Image 2.1 - Your prompt and picture"
+    }
+  },
+  "39:25": {
+    "inputs": {
+      "switch": true,
+      "on_true": [
+        "5",
+        2
+      ]
+    },
+    "class_type": "ComfySwitchNode",
+    "_meta": {
+      "title": "If/Else Switch - Whose size"
+    }
+  },
+  "39:27": {
+    "inputs": {
+      "sigmas": "1.0, 0.978453, 0.95418, 0.926626, 0.89508, 0.845148, 0.704534, 0.414568, 0"
+    },
+    "class_type": "ManualSigmas",
+    "_meta": {
+      "title": "The turbo's eight steps"
+    }
+  },
+  "39:28": {
+    "inputs": {
+      "sampler_name": "euler"
+    },
+    "class_type": "KSamplerSelect",
+    "_meta": {
+      "title": "Sampler: euler"
+    }
+  },
+  "39:29": {
+    "inputs": {
+      "add_noise": true,
+      "noise_seed": [
+        "4",
+        0
+      ],
+      "cfg": 1,
+      "model": [
+        "11",
+        0
+      ],
+      "positive": [
+        "39:24",
+        0
+      ],
+      "negative": [
+        "39:24",
+        1
+      ],
+      "sampler": [
+        "39:28",
+        0
+      ],
+      "sigmas": [
+        "39:27",
+        0
+      ],
+      "latent_image": [
+        "39:25",
+        0
+      ]
+    },
+    "class_type": "SamplerCustom",
+    "_meta": {
+      "title": "Sampler - CFG 1"
+    }
+  },
+  "39:30": {
+    "inputs": {
+      "samples": [
+        "39:29",
+        0
+      ],
+      "vae": [
+        "9",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "Decode"
+    }
+  },
+  "39:49": {
+    "inputs": {
+      "text": "Qwen reads your prompt, and your picture when one is loaded. The switch under it takes the size from your picture, or from Latent Size."
+    },
+    "class_type": "AUSBOSS_NODES_Callout",
+    "_meta": {
+      "title": "Callout"
+    }
+  },
+  "39:50": {
+    "inputs": {
+      "text": "Eight steps on the turbo's own step list, CFG 1, euler. The seed comes from the top level. Then the picture is decoded."
+    },
+    "class_type": "AUSBOSS_NODES_Callout",
+    "_meta": {
+      "title": "Callout"
+    }
+  },
+  "40:31": {
+    "inputs": {
+      "text": "Restore the photo: remove blur, noise and compression artifacts and recover sharp, natural detail, keeping the same composition, people and colors."
+    },
+    "class_type": "AUSBOSS_NODES_Text",
+    "_meta": {
+      "title": "Text - What each tile is asked to do"
+    }
+  },
+  "40:32": {
+    "inputs": {
+      "prompt": [
+        "40:31",
+        0
+      ],
+      "negative_prompt": "",
+      "resolution": 0,
+      "clip": [
+        "8",
+        0
+      ],
+      "images.image_1": [
+        "7",
+        0
+      ],
+      "vae": [
+        "9",
+        0
+      ]
+    },
+    "class_type": "TextEncodeQwenImage21",
+    "_meta": {
+      "title": "Text Encode Qwen Image 2.1 - One tile and the request"
+    }
+  },
+  "40:33": {
+    "inputs": {
+      "loras": "[{\"name\":\"qwen-image-2.1-restore.safetensors\",\"strength\":0.5,\"enabled\":true,\"triggers\":\"\"}]",
+      "trigger_separator": ", ",
+      "on_missing": "error",
+      "model": [
+        "10",
+        0
+      ]
+    },
+    "class_type": "AUSBOSS_NODES_LoraLoader",
+    "_meta": {
+      "title": "LoRA Loader - Restore LoRA"
+    }
+  },
+  "40:34": {
+    "inputs": {
+      "device": "auto",
+      "dtype": "default",
+      "model": [
+        "40:33",
+        0
+      ]
+    },
+    "class_type": "QwenImage21Cache",
+    "_meta": {
+      "title": "Reference cache"
+    }
+  },
+  "40:35": {
+    "inputs": {
+      "expression": "a + 1",
+      "a": [
+        "4",
+        0
+      ]
+    },
+    "class_type": "AUSBOSS_NODES_MathExpression",
+    "_meta": {
+      "title": "Math Expression - Seed plus 1"
+    }
+  },
+  "40:37": {
+    "inputs": {
+      "samples": [
+        "40:62",
+        0
+      ],
+      "vae": [
+        "9",
+        0
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "Decode"
+    }
+  },
+  "40:38": {
+    "inputs": {
+      "keep_colors": 1,
+      "tiles": [
+        "40:37",
+        0
+      ],
+      "stitcher": [
+        "7",
+        1
+      ]
+    },
+    "class_type": "AUSBOSS_NODES_TiledUpscaleStitch",
+    "_meta": {
+      "title": "Tiled Upscale Stitch - Join the tiles"
+    }
+  },
+  "40:51": {
+    "inputs": {
+      "text": "Qwen reads one tile at its own size, together with the request. The encoded tile gives the redraw its size."
+    },
+    "class_type": "AUSBOSS_NODES_Callout",
+    "_meta": {
+      "title": "Callout"
+    }
+  },
+  "40:52": {
+    "inputs": {
+      "text": "Each tile is drawn again from noise in seven steps while Qwen looks at the tile. The Restore LoRA keeps it close to the picture."
+    },
+    "class_type": "AUSBOSS_NODES_Callout",
+    "_meta": {
+      "title": "Callout"
+    }
+  },
+  "40:53": {
+    "inputs": {
+      "text": "Each tile is decoded and matched to its own tile's colors. Then all are joined and fitted to the size you asked for."
+    },
+    "class_type": "AUSBOSS_NODES_Callout",
+    "_meta": {
+      "title": "Callout"
+    }
+  },
+  "40:59": {
+    "inputs": {
+      "pixels": [
+        "7",
+        0
+      ],
+      "vae": [
+        "9",
+        0
+      ]
+    },
+    "class_type": "VAEEncode",
+    "_meta": {
+      "title": "Encode - The tile as the starting picture"
+    }
+  },
+  "40:57": {
+    "inputs": {
+      "sigmas": "1.0, 0.978453, 0.95418, 0.926626, 0.89508, 0.845148, 0.704534, 0.414568"
+    },
+    "class_type": "ManualSigmas",
+    "_meta": {
+      "title": "The turbo's first seven steps"
+    }
+  },
+  "40:58": {
+    "inputs": {
+      "sampler_name": "euler"
+    },
+    "class_type": "KSamplerSelect",
+    "_meta": {
+      "title": "Sampler: euler"
+    }
+  },
+  "40:36": {
+    "inputs": {
+      "add_noise": true,
+      "noise_seed": [
+        "40:35",
+        1
+      ],
+      "cfg": 1,
+      "model": [
+        "40:34",
+        0
+      ],
+      "positive": [
+        "40:32",
+        0
+      ],
+      "negative": [
+        "40:32",
+        1
+      ],
+      "sampler": [
+        "40:58",
+        0
+      ],
+      "sigmas": [
+        "40:57",
+        0
+      ],
+      "latent_image": [
+        "40:59",
+        0
+      ]
+    },
+    "class_type": "SamplerCustom",
+    "_meta": {
+      "title": "Sampler - Seven steps, CFG 1, euler"
+    }
+  },
+  "40:60": {
+    "inputs": {
+      "prompt": "",
+      "negative_prompt": "",
+      "resolution": 0,
+      "clip": [
+        "8",
+        0
+      ],
+      "vae": [
+        "9",
+        0
+      ]
+    },
+    "class_type": "TextEncodeQwenImage21",
+    "_meta": {
+      "title": "Text Encode Qwen Image 2.1 - No picture, no words"
+    }
+  },
+  "40:61": {
+    "inputs": {
+      "sigmas": "0.414568, 0"
+    },
+    "class_type": "ManualSigmas",
+    "_meta": {
+      "title": "The turbo's last step"
+    }
+  },
+  "40:62": {
+    "inputs": {
+      "add_noise": false,
+      "noise_seed": [
+        "40:35",
+        1
+      ],
+      "cfg": 1,
+      "model": [
+        "10",
+        0
+      ],
+      "positive": [
+        "40:60",
+        0
+      ],
+      "negative": [
+        "40:60",
+        1
+      ],
+      "sampler": [
+        "40:58",
+        0
+      ],
+      "sigmas": [
+        "40:61",
+        0
+      ],
+      "latent_image": [
+        "40:36",
+        0
+      ]
+    },
+    "class_type": "SamplerCustom",
+    "_meta": {
+      "title": "Sampler - The last step, plain model"
+    }
+  },
+  "40:63": {
+    "inputs": {
+      "text": "The last step runs on the plain model, without the picture and without words. It finishes skin and fine detail cleanly."
+    },
+    "class_type": "AUSBOSS_NODES_Callout",
+    "_meta": {
+      "title": "Callout"
+    }
+  }
+}
